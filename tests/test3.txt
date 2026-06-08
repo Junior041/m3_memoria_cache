@@ -1,0 +1,50 @@
+# =============================================================================
+# Teste 3 – Demonstracao da diferenca entre LRU e FIFO
+# =============================================================================
+# Este teste usa a MESMA sequencia de enderecos com dois comandos diferentes
+# e mostra que os resultados sao diferentes — o que prova que as politicas
+# foram implementadas corretamente.
+#
+# Configuracao: --cache-size 1024 --block-size 32 --assoc 2 --addr-bits 16
+#   offset=5, index=4, tag=7 | Conjunto 0, 2 vias
+#
+# Enderecos: tag=0 -> 0x0000 | tag=1 -> 0x0200 | tag=2 -> 0x0400
+#
+# -----------------------------------------------------------------------
+# COM LRU  (--policy LRU):
+# -----------------------------------------------------------------------
+#   #1 0x0000 (t=0): MISS   -> [via0:t=0@c0]  [via1:VAZIO]
+#   #2 0x0200 (t=1): MISS   -> [via0:t=0@c0]  [via1:t=1@c1]
+#   #3 0x0000 (t=0): HIT    -> LRU ATUALIZA counter da via0 para c=2
+#                              [via0:t=0@c2]  [via1:t=1@c1]
+#   #4 0x0400 (t=2): MISS   -> LRU evicta via1 (counter c=1, o menor)
+#                              [via0:t=0@c2]  [via1:t=2@c3]
+#   #5 0x0000 (t=0): HIT    -> [via0:t=0@c4]  [via1:t=2@c3]
+#
+# Resultado LRU: 3 misses, 2 hits
+#
+# -----------------------------------------------------------------------
+# COM FIFO (--policy FIFO):
+# -----------------------------------------------------------------------
+#   #1 0x0000 (t=0): MISS   -> [via0:t=0@c0]  [via1:VAZIO]
+#   #2 0x0200 (t=1): MISS   -> [via0:t=0@c0]  [via1:t=1@c1]
+#   #3 0x0000 (t=0): HIT    -> FIFO NAO atualiza counter (fica em c=0!)
+#                              [via0:t=0@c0]  [via1:t=1@c1]
+#   #4 0x0400 (t=2): MISS   -> FIFO evicta via0 (counter c=0, o menor = chegou primeiro)
+#                              [via0:t=2@c2]  [via1:t=1@c1]  <- t=0 foi descartado!
+#   #5 0x0000 (t=0): MISS   -> FIFO evicta via1 (counter c=1, o menor agora)
+#                              [via0:t=2@c2]  [via1:t=0@c3]
+#
+# Resultado FIFO: 4 misses, 1 hit
+#
+# -----------------------------------------------------------------------
+# Comandos para comparar:
+#   ./m3_memoria_cache --cache-size 1024 --block-size 32 --assoc 2 --addr-bits 16 --input test3.txt --policy LRU  --verbose
+#   ./m3_memoria_cache --cache-size 1024 --block-size 32 --assoc 2 --addr-bits 16 --input test3.txt --policy FIFO --verbose
+# =============================================================================
+
+0x0000
+0x0200
+0x0000
+0x0400
+0x0000

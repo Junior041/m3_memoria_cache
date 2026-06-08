@@ -1,0 +1,28 @@
+# =============================================================================
+# Teste 1 – Mapeamento Direto
+# =============================================================================
+# Comando: ./m3_memoria_cache --cache-size 256 --block-size 16 --assoc 1
+#                             --addr-bits 16 --input test1.txt --verbose
+#
+# Configuracao resultante:
+#   offset = 4 bits (2^4 = 16 bytes por bloco)
+#   index  = 4 bits (2^4 = 16 conjuntos)
+#   tag    = 8 bits (16 - 4 - 4)
+#
+# Decomposicao dos enderecos:
+#   Endereco  |  Hex   | tag | index | offset | Resultado esperado
+#   ----------|--------|-----|-------|--------|-------------------
+#   0x0010=16 | 0x0010 |  0  |   1   |   0    | MISS (set 1 vazio)
+#   0x0024=36 | 0x0024 |  0  |   2   |   4    | MISS (set 2 vazio)
+#   0x0010=16 | 0x0010 |  0  |   1   |   0    | HIT  (set 1 ainda tem tag=0)
+#   256=0x0100| 0x0100 |  1  |   0   |   0    | MISS (set 0 vazio)
+#   0x00FF=255| 0x00FF |  0  |  15   |  15    | MISS (set 15 vazio)
+#
+# Resultado esperado: 4 misses, 1 hit
+# =============================================================================
+
+0x0010
+0x0024
+0x0010
+256
+0x00FF

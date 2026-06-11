@@ -1,3 +1,6 @@
+# Alunos: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
+
+
 # Simulador de Memória Cache – Prática M3
 
 Simulador de cache com suporte a **mapeamento direto** e **N-way set-associative** (políticas LRU e FIFO).
@@ -31,7 +34,7 @@ O executável será gerado em `build/m3_memoria_cache`.
 | `--block-size` | Tamanho do bloco/linha em bytes (potência de 2)    | `16`        |
 | `--assoc`      | Associatividade: 1 = direto, N = N-way             | `1`, `2`, `4` |
 | `--addr-bits`  | Número de bits do endereço físico                  | `16`        |
-| `--input`      | Arquivo com sequência de endereços                 | `test1.txt` |
+| `--input`      | Arquivo com sequência de endereços                 | `tests/test1.txt` |
 | `--policy`     | Política de substituição (padrão: LRU)             | `LRU`, `FIFO` |
 | `--verbose`    | Exibe trace detalhado de cada acesso               | —           |
 
@@ -43,21 +46,21 @@ O executável será gerado em `build/m3_memoria_cache`.
 ```bash
 ./build/m3_memoria_cache \
   --cache-size 256 --block-size 16 --assoc 1 \
-  --addr-bits 16 --input test1.txt --verbose
+  --addr-bits 16 --input tests/test1.txt --verbose
 ```
 
 ### 2-way Set-Associative com LRU
 ```bash
 ./build/m3_memoria_cache \
   --cache-size 1024 --block-size 32 --assoc 2 \
-  --addr-bits 16 --input test2.txt
+  --addr-bits 16 --input tests/test2.txt
 ```
 
 ### 4-way com FIFO
 ```bash
 ./build/m3_memoria_cache \
   --cache-size 512 --block-size 8 --assoc 4 \
-  --addr-bits 16 --input test2.txt --policy FIFO
+  --addr-bits 16 --input tests/test2.txt --policy FIFO
 ```
 
 ---

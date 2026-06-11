@@ -1,48 +1,35 @@
-// Autor(es): [coloque seu nome aqui]
-// Descricao: Implementacao das funcoes de output do simulador
-
 #include "display.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
 #include <string>
 
-// -------------------------------------------------------------------------
-// Converte o enum de politica para string legivel
-// -------------------------------------------------------------------------
 static std::string policy_name(ReplacementPolicy p) {
     return (p == ReplacementPolicy::LRU) ? "LRU" : "FIFO";
 }
 
-// -------------------------------------------------------------------------
-// Configuracao
-// -------------------------------------------------------------------------
-
+// Exibe os parâmetros da cache antes de iniciar a simulação
 void print_config(const Config& cfg) {
     std::string mapping;
     if (cfg.assoc == 1) {
         mapping = "Mapeamento Direto";
     } else {
-        mapping = std::to_string(cfg.assoc) + "-way Set-Associative"
-                  " | Politica: " + policy_name(cfg.policy);
+        mapping = std::to_string(cfg.assoc) + "-way Set-Associative ("
+                  + policy_name(cfg.policy) + ")";
     }
 
     std::cout << "\n=== Configuracao da Cache ===\n";
-    std::cout << "  Tamanho total    : " << cfg.cache_size  << " bytes\n";
-    std::cout << "  Tamanho do bloco : " << cfg.block_size  << " bytes\n";
-    std::cout << "  Associatividade  : " << cfg.assoc << " (" << mapping << ")\n";
-    std::cout << "  Conjuntos        : " << cfg.num_sets    << "\n";
-    std::cout << "  Bits do endereco : " << cfg.addr_bits   << "\n";
-    std::cout << "  Decomposicao     : "
-              << "[TAG=" << cfg.tag_bits << " bits]"
-              << " [INDEX=" << cfg.index_bits << " bits]"
-              << " [OFFSET=" << cfg.offset_bits << " bits]\n\n";
+    std::cout << "  Tamanho total  : " << cfg.cache_size  << " bytes\n";
+    std::cout << "  Tamanho bloco  : " << cfg.block_size  << " bytes\n";
+    std::cout << "  Associatividade: " << cfg.assoc << " (" << mapping << ")\n";
+    std::cout << "  Conjuntos      : " << cfg.num_sets    << "\n";
+    std::cout << "  Bits de offset : " << cfg.offset_bits << "\n";
+    std::cout << "  Bits de index  : " << cfg.index_bits  << "\n";
+    std::cout << "  Bits de tag    : " << cfg.tag_bits    << "\n";
+    std::cout << "  Bits de endereco: " << cfg.addr_bits  << "\n";
 }
 
-// -------------------------------------------------------------------------
-// Resultado
-// -------------------------------------------------------------------------
-
+// Exibe o resumo final com hits, misses e percentuais
 void print_result(const SimResult& res) {
     double hit_pct  = res.total_accesses > 0
                       ? 100.0 * res.hits   / res.total_accesses : 0.0;
@@ -58,10 +45,7 @@ void print_result(const SimResult& res) {
               << "  (" << miss_pct << "%)\n\n";
 }
 
-// -------------------------------------------------------------------------
-// Uso
-// -------------------------------------------------------------------------
-
+// Mostra como usar o programa caso os argumentos estejam errados ou ausentes
 void print_usage(const char* prog) {
     std::cerr << "Uso: " << prog
               << " --cache-size <bytes>"
@@ -78,45 +62,36 @@ void print_usage(const char* prog) {
                                << " --addr-bits 16 --input test2.txt --policy LRU\n";
 }
 
-// -------------------------------------------------------------------------
-// Trace de acesso individual
-// -------------------------------------------------------------------------
-
+// Imprime uma linha do trace: endereço, campos decompostos e resultado (HIT ou MISS)
 void print_access(int access_num,
                   uint64_t addr,
                   uint64_t tag, int index, int offset,
                   bool hit,
                   int  victim_way,
-                  bool was_eviction,
-                  uint64_t evicted_tag)
+                  bool was_removal,
+                  uint64_t removed_tag)
 {
-    // Linha principal: numero, endereco, campos decompostos e resultado
-    std::cout << "[#" << std::setw(3) << std::setfill(' ') << access_num << "]"
-              << "  Addr=0x" << std::hex << std::setw(4) << std::setfill('0') << addr
+    std::cout << "  Addr=0x" << std::hex << std::setw(4) << std::setfill('0') << addr
               << std::dec
               << "  tag=" << std::setw(3) << tag
               << "  index=" << std::setw(2) << index
               << "  offset=" << std::setw(2) << offset
-              << "  ";
+              << "  -> ";
 
     if (hit) {
         std::cout << "HIT\n";
     } else {
         std::cout << "MISS";
-        if (was_eviction) {
-            std::cout << "  (substituiu via " << victim_way
-                      << ", tag=" << evicted_tag << ")";
+        if (was_removal) {
+            std::cout << "  (removido via " << victim_way << ", tag=" << removed_tag << ")";
         } else {
-            std::cout << "  (carregado em via " << victim_way << ")";
+            std::cout << "  (carregado na via " << victim_way << ")";
         }
         std::cout << "\n";
     }
 }
 
-// -------------------------------------------------------------------------
-// Estado do conjunto apos o acesso
-// -------------------------------------------------------------------------
-
+// Mostra o estado atual do conjunto após cada acesso (usado no modo verbose)
 void print_set_state(int set_index, const std::vector<CacheLine>& set) {
     std::cout << "       Conj." << std::setw(2) << set_index << ": ";
     for (int w = 0; w < static_cast<int>(set.size()); w++) {

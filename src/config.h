@@ -1,3 +1,5 @@
+// config.h - struct Config com os parametros da simulacao (entrados e derivados).
+// Autores: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
 #pragma once
 
 #include <string>

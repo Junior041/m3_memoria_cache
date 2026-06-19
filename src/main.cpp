@@ -1,3 +1,11 @@
+// Simulador de Memoria Cache - Pratica M3
+// Disciplina: Organizacao de Computadores - UNIVALI
+// Prof.: Thiago Felski Pereira
+// Alunos: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
+//
+// main.cpp - ponto de entrada: parse de argumentos, validacao e orquestracao
+//            da simulacao a partir dos modulos cache, address_reader e display.
+
 #include <iostream>
 #include <string>
 #include <stdexcept>

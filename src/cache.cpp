@@ -1,3 +1,7 @@
+// cache.cpp - logica central do simulador: decomposicao de endereco,
+//             busca de hit/miss e politicas de substituicao (LRU/FIFO).
+// Autores: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
+
 #include "cache.h"
 #include "display.h"
 

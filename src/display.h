@@ -1,3 +1,5 @@
+// display.h - funcoes de impressao da configuracao, do trace e do resultado.
+// Autores: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
 #pragma once
 
 #include <vector>

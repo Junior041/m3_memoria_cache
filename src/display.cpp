@@ -1,3 +1,7 @@
+// display.cpp - formatacao das saidas: configuracao inicial, trace verbose
+//               e relatorio final de hits/misses.
+// Autores: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
+
 #include "display.h"
 #include <iostream>
 #include <iomanip>

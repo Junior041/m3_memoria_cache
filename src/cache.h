@@ -1,3 +1,5 @@
+// cache.h - tipos e interface publica da classe Cache.
+// Autores: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
 #pragma once
 
 #include <vector>

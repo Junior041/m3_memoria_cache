@@ -1,3 +1,7 @@
+// address_reader.cpp - leitura do arquivo de enderecos (decimal/hex)
+//                      com tratamento de erros e validacao do espaco de enderecamento.
+// Autores: Ismael Antonio da Silva Junior, Guilherme Thommy, Eduardo Leopoldo
+
 #include "address_reader.h"
 #include <fstream>
 #include <sstream>
@@ -9,7 +13,7 @@
 std::vector<uint64_t> read_addresses(const std::string& filename, int addr_bits) {
     std::ifstream file(filename);
     if (!file.is_open()) {
-        throw std::runtime_error("Erro: arquivo nao encontrado: " + filename);
+        throw std::runtime_error("arquivo nao encontrado: " + filename);
     }
 
     uint64_t max_addr = (addr_bits >= 64) ? UINT64_MAX : ((1ULL << addr_bits) - 1);
@@ -50,14 +54,14 @@ std::vector<uint64_t> read_addresses(const std::string& filename, int addr_bits)
                 throw std::invalid_argument("caractere inesperado");
             }
         } catch (const std::exception&) {
-            throw std::runtime_error("Erro na linha " + std::to_string(line_num)
+            throw std::runtime_error("linha " + std::to_string(line_num)
                                      + ": valor invalido: \"" + line + "\"");
         }
 
         // Rejeita endereços maiores do que o espaço de endereçamento permite
         if (addr > max_addr) {
             std::ostringstream oss;
-            oss << "Erro na linha " << line_num
+            oss << "linha " << line_num
                 << ": endereco 0x" << std::hex << addr
                 << " excede o espaco de " << std::dec << addr_bits << " bits";
             throw std::runtime_error(oss.str());

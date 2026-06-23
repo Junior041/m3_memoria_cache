@@ -1,5 +1,5 @@
-#   ./m3_memoria_cache --cache-size 1024 --block-size 32 --assoc 2 --addr-bits 16 --input tests/test3.txt --policy LRU  --verbose
-#   ./m3_memoria_cache --cache-size 1024 --block-size 32 --assoc 2 --addr-bits 16 --input tests/test3.txt --policy FIFO --verbose
+#   ./build/m3_memoria_cache --cache-size 1024 --block-size 32 --assoc 2 --addr-bits 16 --input tests/test3.txt --policy LRU  --verbose
+#   ./build/m3_memoria_cache --cache-size 1024 --block-size 32 --assoc 2 --addr-bits 16 --input tests/test3.txt --policy FIFO --verbose
 
 0x0000
 0x0200
